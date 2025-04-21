@@ -21,24 +21,24 @@ export default function TextChat() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
-  // Get preferences from sessionStorage (set on the home page)
-  const storedPreference = sessionStorage.getItem('matchPreference') || 'same-country';
-  const storedGender = sessionStorage.getItem('gender') || Gender.PreferNotToSay;
-  const storedGenderPreference = sessionStorage.getItem('genderPreference') || GenderPreference.Any;
-  
-  // Cast to proper types
-  const matchPreference = (
-    storedPreference === ConnectionPreference.SameCountry || 
-    storedPreference === ConnectionPreference.AnyCountry
-  ) ? storedPreference as ConnectionPreferenceType : ConnectionPreference.SameCountry;
-  
-  const gender = Object.values(Gender).includes(storedGender as GenderType) 
-    ? storedGender as GenderType 
-    : Gender.PreferNotToSay;
-    
-  const genderPreference = Object.values(GenderPreference).includes(storedGenderPreference as GenderPreferenceType)
-    ? storedGenderPreference as GenderPreferenceType
-    : GenderPreference.Any;
+  // Retrieve preferences from sessionStorage
+  const storedPreference = sessionStorage.getItem('matchPreference') as ConnectionPreferenceType || ConnectionPreference.SameCountry;
+  const storedGender = sessionStorage.getItem('gender') as GenderType || Gender.PreferNotToSay;
+  const storedGenderPreference = sessionStorage.getItem('genderPreference') as GenderPreferenceType || GenderPreference.Any;
+
+  // Validate and cast preferences
+  const matchPreference: ConnectionPreferenceType =
+    Object.values(ConnectionPreference).includes(storedPreference)
+      ? storedPreference
+      : ConnectionPreference.SameCountry;
+  const gender: GenderType =
+    Object.values(Gender).includes(storedGender)
+      ? storedGender
+      : Gender.PreferNotToSay;
+  const genderPreference: GenderPreferenceType =
+    Object.values(GenderPreference).includes(storedGenderPreference)
+      ? storedGenderPreference
+      : GenderPreference.Any;
 
   const {
     status,
@@ -50,18 +50,14 @@ export default function TextChat() {
     findNextStranger,
     disconnect,
     error
-  } = useChat({ 
-    matchPreference,
-    gender,
-    genderPreference 
-  });
+  } = useChat({ matchPreference, gender, genderPreference });
 
   useEffect(() => {
     if (error) {
       toast({
-        title: "Connection Error",
+        title: 'Connection Error',
         description: error,
-        variant: "destructive"
+        variant: 'destructive'
       });
     }
   }, [error, toast]);
@@ -81,26 +77,26 @@ export default function TextChat() {
   return (
     <div className="container mx-auto px-4 py-6 h-screen flex flex-col">
       <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full">
-          <ChatHeader 
-            status={status} 
-            onFindNext={findNextStranger} 
-            onEndChat={handleEndChat} 
+        <ChatContainer>
+          <ChatHeader
+            status={status}
+            onFindNext={findNextStranger}
+            onEndChat={handleEndChat}
           />
 
-          <ChatMessages 
-            messages={messages} 
-            status={status} 
-            isTyping={isTyping} 
+          <ChatMessages
+            messages={messages}
+            status={status}
+            isTyping={isTyping}
           />
 
-          <ChatInput 
+          <ChatInput
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onSubmit={handleSendMessage}
             disabled={status !== 'connected'}
           />
-        </div>
+        </ChatContainer>
       </div>
     </div>
   );
