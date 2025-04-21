@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { Server as SocketIOServer } from "socket.io";
+import { Server as SocketIOServer, Namespace } from "socket.io";
 import axios from "axios";
 import { storage } from "./storage";
 import { matchLogic } from "./matchLogic";

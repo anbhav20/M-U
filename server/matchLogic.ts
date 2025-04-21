@@ -1,4 +1,4 @@
-import { Server, Socket } from "socket.io";
+import { Server, Socket, Namespace } from "socket.io";
 import { v4 as uuidv4 } from "uuid";
 import { storage } from "./storage";
 import {
@@ -91,7 +91,7 @@ class MatchLogic {
   }
   
   // Handle user leaving a room
-  leaveRoom(userId: string, namespace: Server): void {
+  leaveRoom(userId: string, namespace: Namespace): void {
     const roomId = storage.getUserRoom(userId);
     
     if (roomId) {

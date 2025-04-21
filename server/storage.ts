@@ -1,14 +1,8 @@
-import { users, type User, type InsertUser, UserInfo } from "@shared/schema";
+import { UserInfo } from "@shared/schema";
 import { Socket } from "socket.io";
 
-// modify the interface with any CRUD methods
-// you might need
-
+// Storage interface for managing queues and rooms
 export interface IStorage {
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
-  
   // Queue related methods
   getGlobalQueue(chatType: string): Array<{ userInfo: UserInfo, socket: Socket }>;
   getCountryQueue(country: string, chatType: string): Array<{ userInfo: UserInfo, socket: Socket }>;
@@ -24,40 +18,19 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private queues: Map<string, Array<{ userInfo: UserInfo, socket: Socket }>>;
+  queues: Map<string, Array<{ userInfo: UserInfo, socket: Socket }>>;
   private rooms: Map<string, { user1: string, user2: string }>;
   private userRooms: Map<string, string>; // userId -> roomId
-  currentId: number;
 
   constructor() {
-    this.users = new Map();
     this.queues = new Map();
     this.rooms = new Map();
     this.userRooms = new Map();
-    this.currentId = 1;
     
     // Initialize queues
     this.queues.set('global-text', []);
     this.queues.set('global-video', []);
     // Country queues will be created dynamically
-  }
-
-  async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
   }
 
   // Queue Management Methods
@@ -82,6 +55,7 @@ export class MemStorage implements IStorage {
       this.queues.set(queue, []);
     }
     this.queues.get(queue)?.push({ userInfo, socket });
+    console.log(`Added user ${userInfo.id} to ${queue} queue. Queue size: ${this.queues.get(queue)?.length}`);
   }
 
   removeFromQueue(queue: string, userId: string): void {
@@ -91,6 +65,7 @@ export class MemStorage implements IStorage {
         const index = queueArr.findIndex(item => item.userInfo.id === userId);
         if (index !== -1) {
           queueArr.splice(index, 1);
+          console.log(`Removed user ${userId} from ${queue} queue. Queue size: ${queueArr.length}`);
         }
       }
     }
@@ -98,6 +73,7 @@ export class MemStorage implements IStorage {
 
   clearQueue(queue: string): void {
     this.queues.set(queue, []);
+    console.log(`Cleared ${queue} queue`);
   }
 
   // Room Management Methods
@@ -105,6 +81,7 @@ export class MemStorage implements IStorage {
     this.rooms.set(roomId, { user1: user1Id, user2: user2Id });
     this.userRooms.set(user1Id, roomId);
     this.userRooms.set(user2Id, roomId);
+    console.log(`Created room ${roomId} with users ${user1Id} and ${user2Id}`);
   }
 
   getRoom(roomId: string): { user1: string, user2: string } | undefined {
@@ -121,6 +98,7 @@ export class MemStorage implements IStorage {
       this.userRooms.delete(room.user1);
       this.userRooms.delete(room.user2);
       this.rooms.delete(roomId);
+      console.log(`Removed room ${roomId}`);
     }
   }
 }
