@@ -1,0 +1,150 @@
+Project Documentation: Talk2Stranger (Advanced Omegle Clone)
+1. Project Name:
+Talk2Stranger - Meet Strangers Across the World
+
+2. Project Description:
+Talk2Stranger is a web-based real-time communication platform that enables users to connect with strangers globally. Users can select their preferred match criteria — either match with people worldwide or within their country only. The platform supports both text chat and video calling, with complete anonymity and secure peer-to-peer connections.
+
+3. Key Features:
+Anonymous one-on-one chat
+
+Real-time text chat (via Socket.IO)
+
+Peer-to-peer video calling (via WebRTC)
+
+Option to connect globally or within country
+
+Auto-detect user country using IP or manual selection
+
+Secure and private communication
+
+"Next Stranger" functionality to quickly switch connections
+
+4. Landing Page UI:
+Elements:
+Logo / Title
+
+Brief description
+
+Dropdown / radio buttons for:
+
+Match preference:
+
+ Same Country
+
+ Any Country
+
+Start Chat button
+
+Start Video button
+
+5. Tech Stack (Advanced Version):
+
+Layer	Technology Used
+Frontend	HTML, CSS, JavaScript, Geo-IP API
+Backend	Node.js + Express.js
+Real-time Comm	Socket.IO
+Video Calling	WebRTC
+Geo-location	ip-api.com or ipinfo.io
+Hosting	Vercel + Render + Cloudflare
+6. System Workflow:
+A. Text Chat Flow (Filtered):
+User opens site, selects match preference.
+
+If same country selected:
+
+Server checks user’s IP country (Geo-IP).
+
+Puts them in a country-specific queue.
+
+If "any country" selected:
+
+User goes into global queue.
+
+When 2 compatible users found, server creates a private room.
+
+Users exchange messages via Socket.IO.
+
+On “Next,” both are removed and requeued.
+
+B. Video Chat Flow (Filtered):
+Same flow as above until match.
+
+Once matched:
+
+Signaling data (offer/answer) shared via Socket.IO
+
+WebRTC creates peer-to-peer video/audio connection
+
+Secure stream setup between users
+
+"Next" ends call and closes connection
+
+7. Backend Matching Logic:
+Queues Structure:
+js
+Copy
+Edit
+{
+  globalQueue: [],
+  countryQueues: {
+    "IN": [socket1, socket2],
+    "US": [socket3]
+  }
+}
+Matching Algorithm:
+If user selected “Same Country” → match from countryQueues[country]
+
+If “Any Country” → match from globalQueue
+
+If empty → keep user waiting
+
+8. Page Routing:
+
+Route	Purpose
+/	Landing page
+/chat	Text chat interface
+/video	Video chat interface
+/api/geo	Detect user location using IP (optional)
+9. Folder Structure:
+pgsql
+Copy
+Edit
+talk2stranger/
+├── public/
+│   ├── index.html
+│   ├── chat.html
+│   ├── video.html
+│   ├── style.css
+│   └── client.js
+├── server.js
+├── matchLogic.js      # Filtering logic
+├── package.json
+└── README.md
+10. Future Enhancements:
+Interest-based filtering (e.g., topics: gaming, music)
+
+Gender preferences
+
+User feedback/report system
+
+Multilingual UI
+
+Moderation tools
+
+11. Hosting & Deployment:
+
+Component	Platform	Reason
+Frontend	Vercel	Easy CI/CD
+Backend	Render	Node.js backend hosting
+Media Relay	TURN Server	Backup for failed WebRTC NATs
+CDN	Cloudflare	Speed + Protection
+12. External APIs & Libraries:
+Geo-IP API: ip-api.com/json or ipinfo.io
+
+Socket.IO: Real-time communication
+
+WebRTC: Browser-based video call
+
+Express.js: Backend routing
+
