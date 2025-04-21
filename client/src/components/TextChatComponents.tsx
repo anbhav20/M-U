@@ -83,19 +83,20 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
     setAutoScroll(atBottom);
   };
 
-  // Scroll to bottom only if auto-scroll is enabled
+  // Only scroll to bottom when connection status changes
   React.useEffect(() => {
-    if (autoScroll && messagesEndRef.current) {
+    if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isTyping, autoScroll]);
+  }, [status]);
 
   return (
     <div 
       ref={messagesContainerRef}
-      className="flex-1 p-4 overflow-y-auto bg-gray-50"
+      className="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col"
       onScroll={handleScroll}
     >
+      <div className="my-auto">
       {/* Connection message */}
       {status === 'waiting' && (
         <div className="flex justify-center my-4">
@@ -156,7 +157,8 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
         </button>
       )}
 
-      <div ref={messagesEndRef} />
+      </div>
+      <div ref={messagesEndRef} className="h-0" />
     </div>
   );
 }
