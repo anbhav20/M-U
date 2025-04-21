@@ -4,7 +4,9 @@ import { storage } from "./storage";
 import {
   UserInfo,
   ConnectionPreference,
-  ChatType
+  ChatType,
+  GenderType,
+  GenderPreference
 } from "@shared/schema";
 
 class MatchLogic {
@@ -33,6 +35,32 @@ class MatchLogic {
     }
   }
   
+  // Check if users match based on gender preferences
+  isGenderMatch(user1: UserInfo, user2: UserInfo): boolean {
+    // If either user doesn't have gender preferences, they match
+    if (!user1.genderPreference || !user2.genderPreference || 
+        !user1.gender || !user2.gender) {
+      return true;
+    }
+
+    // Check if user1's gender preference matches user2's gender
+    const user1PrefMatchesUser2 = 
+      user1.genderPreference === GenderPreference.Any || 
+      (user1.genderPreference === GenderPreference.Both && 
+        (user2.gender === 'male' || user2.gender === 'female')) ||
+      user1.genderPreference === user2.gender;
+
+    // Check if user2's gender preference matches user1's gender
+    const user2PrefMatchesUser1 = 
+      user2.genderPreference === GenderPreference.Any || 
+      (user2.genderPreference === GenderPreference.Both && 
+        (user1.gender === 'male' || user1.gender === 'female')) ||
+      user2.genderPreference === user1.gender;
+
+    // Both users should match each other's preferences
+    return user1PrefMatchesUser2 && user2PrefMatchesUser1;
+  }
+
   // Try to match users from a specific queue
   tryMatchFromQueue(queueKey: string): void {
     const chatType = queueKey.includes('-text') ? ChatType.Text : ChatType.Video;
@@ -48,34 +76,45 @@ class MatchLogic {
     
     // Match if at least 2 users are waiting
     if (queue.length >= 2) {
-      const user1 = queue[0];
-      const user2 = queue[1];
-      
-      // Create a new room with unique ID
-      const roomId = uuidv4();
-      storage.createRoom(roomId, user1.userInfo.id, user2.userInfo.id);
-      
-      // Join sockets to the room
-      user1.socket.join(roomId);
-      user2.socket.join(roomId);
-      
-      // Notify users they've been matched
-      const namespace = user1.socket.nsp;
-      
-      if (chatType === ChatType.Text) {
-        // For text chats, just notify that they're matched
-        namespace.to(roomId).emit('matched');
-      } else {
-        // For video chats, designate caller and callee
-        user1.socket.emit('matched', true); // User1 will initiate the call
-        user2.socket.emit('matched', false);
+      // Look for compatible matches based on gender preferences
+      for (let i = 0; i < queue.length; i++) {
+        for (let j = i + 1; j < queue.length; j++) {
+          const user1 = queue[i];
+          const user2 = queue[j];
+
+          // Check if they match based on gender preferences
+          if (this.isGenderMatch(user1.userInfo, user2.userInfo)) {
+            // Create a new room with unique ID
+            const roomId = uuidv4();
+            storage.createRoom(roomId, user1.userInfo.id, user2.userInfo.id);
+            
+            // Join sockets to the room
+            user1.socket.join(roomId);
+            user2.socket.join(roomId);
+            
+            // Notify users they've been matched
+            const namespace = user1.socket.nsp;
+            
+            if (chatType === ChatType.Text) {
+              // For text chats, just notify that they're matched
+              namespace.to(roomId).emit('matched');
+            } else {
+              // For video chats, designate caller and callee
+              user1.socket.emit('matched', true); // User1 will initiate the call
+              user2.socket.emit('matched', false);
+            }
+            
+            console.log(`Matched users ${user1.userInfo.id} and ${user2.userInfo.id} in room ${roomId}`);
+            
+            // Remove matched users from the queue
+            storage.removeFromQueue(queueKey, user1.userInfo.id);
+            storage.removeFromQueue(queueKey, user2.userInfo.id);
+            
+            // Return after successfully matching a pair
+            return;
+          }
+        }
       }
-      
-      console.log(`Matched users ${user1.userInfo.id} and ${user2.userInfo.id} in room ${roomId}`);
-      
-      // Remove matched users from the queue
-      storage.removeFromQueue(queueKey, user1.userInfo.id);
-      storage.removeFromQueue(queueKey, user2.userInfo.id);
     }
   }
   

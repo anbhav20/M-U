@@ -12,7 +12,9 @@ import {
   ChatTypeType,
   UserInfo,
   WebRTCSignal,
-  ChatMessage
+  ChatMessage,
+  GenderType,
+  GenderPreferenceType
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -38,6 +40,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // Get user preferences from query parameters
     const preference = socket.handshake.query.preference as ConnectionPreferenceType || ConnectionPreference.AnyCountry;
+    const gender = socket.handshake.query.gender as GenderType;
+    const genderPreference = socket.handshake.query.genderPreference as GenderPreferenceType;
     const chatType = ChatType.Text;
     
     // Get user's country from IP
@@ -48,7 +52,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: socket.id,
           country: countryData.countryCode,
           preference,
-          chatType
+          chatType,
+          gender,
+          genderPreference
         };
         
         // Add user to appropriate queue
@@ -101,6 +107,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // Get user preferences from query parameters
     const preference = socket.handshake.query.preference as ConnectionPreferenceType || ConnectionPreference.AnyCountry;
+    const gender = socket.handshake.query.gender as GenderType;
+    const genderPreference = socket.handshake.query.genderPreference as GenderPreferenceType;
     const chatType = ChatType.Video;
     
     // Get user's country from IP
@@ -111,7 +119,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: socket.id,
           country: countryData.countryCode,
           preference,
-          chatType
+          chatType,
+          gender,
+          genderPreference
         };
         
         // Add user to appropriate queue

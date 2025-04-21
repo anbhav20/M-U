@@ -8,6 +8,26 @@ export const ConnectionPreference = {
 
 export type ConnectionPreferenceType = typeof ConnectionPreference[keyof typeof ConnectionPreference];
 
+// Define gender types
+export const Gender = {
+  Male: "male",
+  Female: "female",
+  NonBinary: "non-binary",
+  PreferNotToSay: "prefer-not-to-say",
+} as const;
+
+export type GenderType = typeof Gender[keyof typeof Gender];
+
+// Define gender preference types
+export const GenderPreference = {
+  Male: "male",
+  Female: "female",
+  Both: "both",
+  Any: "any",
+} as const;
+
+export type GenderPreferenceType = typeof GenderPreference[keyof typeof GenderPreference];
+
 export const ConnectionStatus = {
   Disconnected: "disconnected",
   Waiting: "waiting",
@@ -35,6 +55,8 @@ export interface UserInfo {
   country: string;
   preference: ConnectionPreferenceType;
   chatType: ChatTypeType;
+  gender?: GenderType;
+  genderPreference?: GenderPreferenceType;
 }
 
 export interface WebRTCSignal {
