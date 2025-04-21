@@ -13,14 +13,19 @@ export default function AppFooter() {
             <h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">M&U</h3>
             <p className="text-gray-300 mb-4">Connect with people from around the world through secure and anonymous text and video chats.</p>
             <div className="flex space-x-4">
+              {/* Commented social links for future use
               <a href="https://github.com" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <FaGithub size={20} />
               </a>
               <a href="https://twitter.com" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <FaTwitter size={20} />
               </a>
-              <a href="https://instagram.com" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+              */}
+              <a href="https://www.instagram.com/__anbhav/" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <FaInstagram size={20} />
+              </a>
+              <a href="mailto:spidey.9449@gmail.com" className="text-gray-400 hover:text-white transition-colors">
+                <i className="fas fa-envelope text-xl"></i>
               </a>
             </div>
           </div>
