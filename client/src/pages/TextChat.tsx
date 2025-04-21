@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import useChat from '@/hooks/useChat';
+import { ConnectionPreference, ConnectionPreferenceType } from '@shared/schema';
 import { 
   ChatContainer, 
   ChatHeader, 
@@ -14,7 +15,12 @@ export default function TextChat() {
   const { toast } = useToast();
 
   // Get preference from sessionStorage (set on the home page)
-  const matchPreference = sessionStorage.getItem('matchPreference') || 'same-country';
+  const storedPreference = sessionStorage.getItem('matchPreference') || 'same-country';
+  // Cast to ConnectionPreferenceType
+  const matchPreference = (
+    storedPreference === ConnectionPreference.SameCountry || 
+    storedPreference === ConnectionPreference.AnyCountry
+  ) ? storedPreference as ConnectionPreferenceType : ConnectionPreference.SameCountry;
 
   const {
     status,

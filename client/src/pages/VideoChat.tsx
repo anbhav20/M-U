@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import useVideoChat from '@/hooks/useVideoChat';
+import { ConnectionPreference, ConnectionPreferenceType } from '@shared/schema';
 import {
   VideoContainer,
   VideoOverlay,
@@ -13,7 +14,12 @@ export default function VideoChat() {
   const { toast } = useToast();
 
   // Get preference from sessionStorage (set on the home page)
-  const matchPreference = sessionStorage.getItem('matchPreference') || 'same-country';
+  const storedPreference = sessionStorage.getItem('matchPreference') || 'same-country';
+  // Cast to ConnectionPreferenceType
+  const matchPreference = (
+    storedPreference === ConnectionPreference.SameCountry || 
+    storedPreference === ConnectionPreference.AnyCountry
+  ) ? storedPreference as ConnectionPreferenceType : ConnectionPreference.SameCountry;
   
   const {
     status,
