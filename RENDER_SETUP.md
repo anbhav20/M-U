@@ -19,7 +19,7 @@ Update your scripts section in package.json to include the following:
 
 1. The `build` script now compiles the `server/production.ts` file (created for you) instead of `server/index.ts`
 2. The `start` script will now run `dist/production.js` instead of `dist/index.js`
-3. Removed the `db:push` script since we're not using a database
+3. Removed any database-related scripts
 
 ## Step-by-Step Deployment Process
 

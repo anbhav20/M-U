@@ -1,6 +1,6 @@
 # Talk2Stranger
 
-A real-time anonymous chat platform that allows users to connect with strangers via text and video chat. This application is inspired by Omegle but built with modern technologies and enhanced features.
+A real-time anonymous chat platform that allows users to connect with strangers via text and video chat. This is a complete, database-free application built with modern technologies focused on real-time communication.
 
 ## Features
 
@@ -10,6 +10,7 @@ A real-time anonymous chat platform that allows users to connect with strangers 
 - "Next" functionality to find new chat partners
 - Real-time typing indicators
 - Responsive design for desktop and mobile
+- No database required - fully in-memory storage
 
 ## Tech Stack
 
@@ -18,6 +19,7 @@ A real-time anonymous chat platform that allows users to connect with strangers 
 - **Real-time Communication**: Socket.IO for messaging, WebRTC for video
 - **Styling**: TailwindCSS with ShadCN UI components
 - **Routing**: Wouter for client-side routing
+- **Storage**: In-memory data structures (no database needed)
 
 ## Getting Started
 
