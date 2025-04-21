@@ -14,19 +14,19 @@
 
 @layer components {
   .chat-bubble {
-    @apply my-2 p-3 max-w-[75%] rounded-lg break-words;
+    @apply my-2 p-3 rounded-lg break-words inline-block max-w-[75%];
   }
 
   .chat-bubble-you {
-    @apply bg-blue-600 text-white ml-auto rounded-br-none;
+    @apply bg-blue-600 text-white ml-auto rounded-br-none float-right clear-both;
   }
 
   .chat-bubble-stranger {
-    @apply bg-gray-200 text-gray-700 mr-auto rounded-bl-none;
+    @apply bg-gray-200 text-gray-700 mr-auto rounded-bl-none float-left clear-both;
   }
 
   .chat-bubble-system {
-    @apply bg-gray-100 text-gray-500 mx-auto text-center text-sm px-4 py-2 rounded-full max-w-max;
+    @apply bg-gray-100 text-gray-500 mx-auto text-center text-sm px-4 py-2 rounded-full max-w-max clear-both;
   }
 
   /* Typing indicator animation */
