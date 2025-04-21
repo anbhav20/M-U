@@ -8,17 +8,21 @@ import Home from "@/pages/Home";
 import TextChat from "@/pages/TextChat";
 import VideoChat from "@/pages/VideoChat";
 import AppHeader from "@/components/AppHeader";
+import AppFooter from "@/components/AppFooter";
 
 function Router() {
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800">
+    <div className="min-h-screen bg-gray-100 text-gray-800 flex flex-col">
       <AppHeader />
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/chat" component={TextChat} />
-        <Route path="/video" component={VideoChat} />
-        <Route component={NotFound} />
-      </Switch>
+      <main className="flex-grow">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/chat" component={TextChat} />
+          <Route path="/video" component={VideoChat} />
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+      <AppFooter />
     </div>
   );
 }
