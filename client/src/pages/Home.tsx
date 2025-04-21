@@ -1,25 +1,53 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import MatchPreferenceSelector from '@/components/MatchPreferenceSelector';
+import GenderSelector from '@/components/GenderSelector';
 import ConnectionButtons from '@/components/ConnectionButtons';
 import FeatureHighlights from '@/components/FeatureHighlights';
 import useGeoLocation from '@/hooks/useGeoLocation';
-import { ConnectionPreference, ConnectionPreferenceType } from '@shared/schema';
+import { 
+  ConnectionPreference, 
+  ConnectionPreferenceType,
+  Gender,
+  GenderType,
+  GenderPreference,
+  GenderPreferenceType
+} from '@shared/schema';
 
 export default function Home() {
   const [matchPreference, setMatchPreference] = useState<ConnectionPreferenceType>(ConnectionPreference.SameCountry);
+  const [gender, setGender] = useState<GenderType>(Gender.PreferNotToSay); 
+  const [genderPreference, setGenderPreference] = useState<GenderPreferenceType>(GenderPreference.Any);
   const [location, navigate] = useLocation();
   const { country, isLoading: isLoadingCountry } = useGeoLocation();
 
+  // Load saved preferences from sessionStorage if they exist
+  useEffect(() => {
+    const savedGender = sessionStorage.getItem('gender');
+    const savedGenderPref = sessionStorage.getItem('genderPreference');
+    
+    if (savedGender) {
+      setGender(savedGender as GenderType);
+    }
+    
+    if (savedGenderPref) {
+      setGenderPreference(savedGenderPref as GenderPreferenceType);
+    }
+  }, []);
+
   const handleStartTextChat = () => {
-    // Store preferences in sessionStorage to persist across pages
+    // Store all preferences in sessionStorage to persist across pages
     sessionStorage.setItem('matchPreference', matchPreference);
+    sessionStorage.setItem('gender', gender);
+    sessionStorage.setItem('genderPreference', genderPreference);
     navigate('/chat');
   };
 
   const handleStartVideoChat = () => {
-    // Store preferences in sessionStorage to persist across pages
+    // Store all preferences in sessionStorage to persist across pages
     sessionStorage.setItem('matchPreference', matchPreference);
+    sessionStorage.setItem('gender', gender);
+    sessionStorage.setItem('genderPreference', genderPreference);
     navigate('/video');
   };
 
@@ -38,6 +66,13 @@ export default function Home() {
               setMatchPreference={setMatchPreference}
               country={country}
               isLoadingCountry={isLoadingCountry}
+            />
+
+            <GenderSelector 
+              gender={gender}
+              setGender={setGender}
+              genderPreference={genderPreference}
+              setGenderPreference={setGenderPreference}
             />
 
             <ConnectionButtons 

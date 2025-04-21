@@ -2,7 +2,14 @@ import { useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import useChat from '@/hooks/useChat';
-import { ConnectionPreference, ConnectionPreferenceType } from '@shared/schema';
+import { 
+  ConnectionPreference, 
+  ConnectionPreferenceType,
+  Gender,
+  GenderType,
+  GenderPreference,
+  GenderPreferenceType
+} from '@shared/schema';
 import { 
   ChatContainer, 
   ChatHeader, 
@@ -14,13 +21,24 @@ export default function TextChat() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
 
-  // Get preference from sessionStorage (set on the home page)
+  // Get preferences from sessionStorage (set on the home page)
   const storedPreference = sessionStorage.getItem('matchPreference') || 'same-country';
-  // Cast to ConnectionPreferenceType
+  const storedGender = sessionStorage.getItem('gender') || Gender.PreferNotToSay;
+  const storedGenderPreference = sessionStorage.getItem('genderPreference') || GenderPreference.Any;
+  
+  // Cast to proper types
   const matchPreference = (
     storedPreference === ConnectionPreference.SameCountry || 
     storedPreference === ConnectionPreference.AnyCountry
   ) ? storedPreference as ConnectionPreferenceType : ConnectionPreference.SameCountry;
+  
+  const gender = Object.values(Gender).includes(storedGender as GenderType) 
+    ? storedGender as GenderType 
+    : Gender.PreferNotToSay;
+    
+  const genderPreference = Object.values(GenderPreference).includes(storedGenderPreference as GenderPreferenceType)
+    ? storedGenderPreference as GenderPreferenceType
+    : GenderPreference.Any;
 
   const {
     status,
@@ -32,7 +50,11 @@ export default function TextChat() {
     findNextStranger,
     disconnect,
     error
-  } = useChat({ matchPreference });
+  } = useChat({ 
+    matchPreference,
+    gender,
+    genderPreference 
+  });
 
   useEffect(() => {
     if (error) {

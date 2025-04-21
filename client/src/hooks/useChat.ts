@@ -5,14 +5,18 @@ import {
   ConnectionStatusType, 
   ConnectionStatus, 
   ChatType,
-  ConnectionPreferenceType
+  ConnectionPreferenceType,
+  GenderType,
+  GenderPreferenceType
 } from '@shared/schema';
 
 interface UseChatProps {
   matchPreference: ConnectionPreferenceType;
+  gender: GenderType;
+  genderPreference: GenderPreferenceType;
 }
 
-export default function useChat({ matchPreference }: UseChatProps) {
+export default function useChat({ matchPreference, gender, genderPreference }: UseChatProps) {
   const [status, setStatus] = useState<ConnectionStatusType>(ConnectionStatus.Disconnected);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState<string>('');
@@ -29,6 +33,8 @@ export default function useChat({ matchPreference }: UseChatProps) {
       path: '/api/socket.io',
       query: {
         preference: matchPreference,
+        gender: gender,
+        genderPreference: genderPreference,
         chatType: ChatType.Text
       }
     });
