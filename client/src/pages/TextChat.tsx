@@ -57,9 +57,9 @@ export default function TextChat() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[80vh]">
+    <div className="container mx-auto px-4 py-6 h-screen flex flex-col">
+      <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full">
           <ChatHeader 
             status={status} 
             onFindNext={findNextStranger} 

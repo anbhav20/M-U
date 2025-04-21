@@ -71,13 +71,31 @@ interface ChatMessagesProps {
 
 export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) {
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
+  const messagesContainerRef = React.useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = React.useState(true);
 
+  // Check if user has manually scrolled up
+  const handleScroll = () => {
+    if (!messagesContainerRef.current) return;
+    
+    const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+    const atBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 50;
+    setAutoScroll(atBottom);
+  };
+
+  // Scroll to bottom only if auto-scroll is enabled
   React.useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+    if (autoScroll && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isTyping, autoScroll]);
 
   return (
-    <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+    <div 
+      ref={messagesContainerRef}
+      className="flex-1 p-4 overflow-y-auto bg-gray-50"
+      onScroll={handleScroll}
+    >
       {/* Connection message */}
       {status === 'waiting' && (
         <div className="flex justify-center my-4">
@@ -101,7 +119,11 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
         <div 
           key={index} 
           className={`chat-bubble ${
-            message.sender === 'you' ? 'chat-bubble-you' : 'chat-bubble-stranger'
+            message.sender === 'you' 
+              ? 'chat-bubble-you' 
+              : message.sender === 'system' 
+                ? 'chat-bubble-system' 
+                : 'chat-bubble-stranger'
           }`}
         >
           <p>{message.content}</p>
@@ -117,6 +139,21 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
             <span></span>
           </div>
         </div>
+      )}
+
+      {/* Auto-scroll button (shows when user has scrolled up) */}
+      {!autoScroll && messages.length > 0 && (
+        <button 
+          className="fixed bottom-24 right-8 bg-primary text-white rounded-full p-2 shadow-lg"
+          onClick={() => {
+            setAutoScroll(true);
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
+        </button>
       )}
 
       <div ref={messagesEndRef} />
@@ -157,7 +194,7 @@ export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProp
 
 export function ChatContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[80vh]">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full">
       {children}
     </div>
   );
