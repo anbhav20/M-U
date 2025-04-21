@@ -13,6 +13,20 @@
 }
 
 @layer components {
+  .chat-container {
+    @apply h-[calc(100vh-2rem)] max-h-[800px] w-full max-w-4xl mx-auto flex flex-col;
+  }
+
+  .chat-messages {
+    @apply flex-1 overflow-y-auto bg-gray-50 flex flex-col;
+    height: calc(100% - 140px);
+  }
+
+  .chat-input-container {
+    @apply border-t p-4 bg-white;
+    height: 80px;
+  }
+
   .chat-bubble {
     @apply my-2 p-3 rounded-lg break-words inline-block max-w-[75%];
   }

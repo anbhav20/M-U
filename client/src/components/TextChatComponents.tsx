@@ -93,7 +93,7 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
   return (
     <div 
       ref={messagesContainerRef}
-      className="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col"
+      className="chat-messages p-4"
       onScroll={handleScroll}
     >
       <div className="my-auto">
@@ -172,7 +172,7 @@ interface ChatInputProps {
 
 export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProps) {
   return (
-    <div className="border-t p-4">
+    <div className="chat-input-container">
       <form onSubmit={onSubmit} className="flex">
         <input 
           type="text" 
@@ -196,7 +196,7 @@ export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProp
 
 export function ChatContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full">
+    <div className="chat-container bg-white rounded-xl shadow-md overflow-hidden">
       {children}
     </div>
   );
