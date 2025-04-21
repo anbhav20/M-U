@@ -5,14 +5,18 @@ import {
   ConnectionStatus, 
   ChatType,
   ConnectionPreferenceType,
-  WebRTCSignal 
+  WebRTCSignal,
+  GenderType,
+  GenderPreferenceType
 } from '@shared/schema';
 
 interface UseVideoChatProps {
   matchPreference: ConnectionPreferenceType;
+  gender: GenderType;
+  genderPreference: GenderPreferenceType;
 }
 
-export default function useVideoChat({ matchPreference }: UseVideoChatProps) {
+export default function useVideoChat({ matchPreference, gender, genderPreference }: UseVideoChatProps) {
   const [status, setStatus] = useState<ConnectionStatusType>(ConnectionStatus.Disconnected);
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
   const [isCameraOn, setIsCameraOn] = useState<boolean>(true);
@@ -49,6 +53,8 @@ export default function useVideoChat({ matchPreference }: UseVideoChatProps) {
           path: '/api/socket.io',
           query: {
             preference: matchPreference,
+            gender: gender,
+            genderPreference: genderPreference,
             chatType: ChatType.Video
           }
         });
@@ -148,7 +154,7 @@ export default function useVideoChat({ matchPreference }: UseVideoChatProps) {
         socketRef.current.disconnect();
       }
     };
-  }, [matchPreference]);
+  }, [matchPreference, gender, genderPreference]);
 
   // Create peer connection
   const createPeerConnection = () => {
