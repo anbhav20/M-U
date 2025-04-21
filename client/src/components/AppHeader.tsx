@@ -10,7 +10,7 @@ export default function AppHeader() {
         <Link href="/">
           <div className="flex items-center space-x-2 cursor-pointer">
             <i className="fas fa-comments text-primary text-2xl"></i>
-            <h1 className="text-2xl font-bold text-gray-800">Talk2Stranger</h1>
+            <h1 className="text-2xl font-bold text-gray-800">M&U</h1>
           </div>
         </Link>
 
