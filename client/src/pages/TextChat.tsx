@@ -70,6 +70,7 @@ export default function TextChat() {
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputMessage.trim() !== '') {
+      // Send the message - this will trigger auto-scroll in the ChatMessages component
       sendMessage();
     }
   };

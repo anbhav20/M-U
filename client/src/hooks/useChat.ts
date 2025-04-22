@@ -124,8 +124,13 @@ export default function useChat({ matchPreference, gender, genderPreference }: U
         timestamp: Date.now()
       };
       
+      // Send message to server
       socketRef.current.emit('message', message);
+      
+      // Add message to local state (this will trigger auto-scroll in the component)
       setMessages(prev => [...prev, message]);
+      
+      // Clear input field
       setInputMessage('');
     }
   }, [inputMessage, status]);
