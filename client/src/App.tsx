@@ -9,6 +9,7 @@ import TextChat from "@/pages/TextChat";
 import VideoChat from "@/pages/VideoChat";
 import AppHeader from "@/components/AppHeader";
 import AppFooter from "@/components/AppFooter";
+import { OnlineUsersProvider } from "@/contexts/OnlineUsersContext";
 
 function Router() {
   return (
@@ -31,8 +32,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <OnlineUsersProvider>
+          <Toaster />
+          <Router />
+        </OnlineUsersProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

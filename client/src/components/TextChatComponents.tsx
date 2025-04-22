@@ -72,54 +72,32 @@ interface ChatMessagesProps {
 export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) {
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const messagesContainerRef = React.useRef<HTMLDivElement>(null);
-  const [autoScroll, setAutoScroll] = React.useState(true);
-  const [userScrolled, setUserScrolled] = React.useState(false);
-  const prevMessagesLengthRef = React.useRef(messages.length);
+  const [showScrollButton, setShowScrollButton] = React.useState(false);
   
-  // Improved scroll detection
+  // Simple scroll detection to show/hide scroll button
   const handleScroll = () => {
     if (!messagesContainerRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
     
-    // Check if user is near bottom (within 50px)
+    // Show scroll button if not at the bottom
     const atBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 50;
-    
-    // Only set userScrolled if they're actually scrolling up
-    if (!atBottom && scrollTop < scrollHeight - clientHeight) {
-      setUserScrolled(true);
-    } else if (atBottom) {
-      setUserScrolled(false);
-    }
-    
-    setAutoScroll(atBottom);
+    setShowScrollButton(!atBottom);
   };
-
-  // Scroll on status change - always scroll to bottom when connection status changes
+  
+  // Initial scroll to bottom only when chat first connects
   React.useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-      setUserScrolled(false);
-      setAutoScroll(true);
+    if (status === 'connected' && messages.length === 0 && messagesEndRef.current) {
+      // Only scroll to bottom on initial connection
+      messagesEndRef.current.scrollIntoView();
     }
-  }, [status]);
-
-  // Auto-scroll on new messages, but only if user hasn't manually scrolled up
-  React.useEffect(() => {
-    // Check if new messages were added
-    const newMessagesAdded = messages.length > prevMessagesLengthRef.current;
-    prevMessagesLengthRef.current = messages.length;
-    
-    if (messagesEndRef.current && (autoScroll || (newMessagesAdded && !userScrolled))) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages, autoScroll, userScrolled]);
+  }, [status, messages.length]);
 
   return (
     <div
       ref={messagesContainerRef}
-      className="flex-1 overflow-y-auto p-4 scroll-smooth"
+      className="flex-1 overflow-y-auto p-4"
       onScroll={handleScroll}
-      style={{ scrollBehavior: 'smooth', overscrollBehavior: 'contain' }}
+      style={{ scrollBehavior: 'smooth' }}
     >
       {/* Connection & initial messages */}
       {status === 'waiting' && (
@@ -164,13 +142,11 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
         </div>
       )}
 
-      {/* Improved Scroll-to-bottom button */}
-      {(!autoScroll || userScrolled) && messages.length > 0 && (
+      {/* Simple manual scroll-to-bottom button */}
+      {showScrollButton && messages.length > 0 && (
         <button
-          className="fixed bottom-24 right-8 bg-primary hover:bg-blue-600 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-all duration-200 animate-bounce-subtle"
+          className="fixed bottom-24 right-8 bg-primary hover:bg-blue-600 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-colors duration-200"
           onClick={() => {
-            setAutoScroll(true);
-            setUserScrolled(false);
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
           }}
           aria-label="Scroll to bottom"
@@ -178,7 +154,7 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
-          <span className="sr-only">New messages</span>
+          <span className="sr-only">Scroll to bottom</span>
         </button>
       )}
 
@@ -220,7 +196,7 @@ export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProp
 
 export function ChatContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="chat-container bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[80vh] max-h-[80vh]" style={{ overscrollBehavior: 'none' }}>
+    <div className="chat-container bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[80vh] max-h-[80vh]">
       {children}
     </div>
   );

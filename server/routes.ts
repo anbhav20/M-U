@@ -33,10 +33,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Setup namespaces for different chat types
   const textChatNamespace = io.of("/chat");
   const videoChatNamespace = io.of("/video");
+  const statsNamespace = io.of("/stats");
+  
+  // Track total online users
+  let onlineUsers = 0;
+  
+  // Function to broadcast online users count
+  const broadcastOnlineUsers = () => {
+    statsNamespace.emit('onlineUsers', onlineUsers);
+    console.log(`Broadcasting online users count: ${onlineUsers}`);
+  };
 
   // Handle text chat connections
   textChatNamespace.on("connection", (socket) => {
     console.log(`New text chat connection: ${socket.id}`);
+    
+    // Increment online users count
+    onlineUsers++;
+    broadcastOnlineUsers();
     
     // Get user preferences from query parameters
     const preference = socket.handshake.query.preference as ConnectionPreferenceType || ConnectionPreference.AnyCountry;
@@ -65,6 +79,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Text chat disconnected: ${socket.id}`);
           matchLogic.removeFromQueue(socket.id);
           matchLogic.leaveRoom(socket.id, textChatNamespace);
+          
+          // Decrement online users count
+          onlineUsers = Math.max(0, onlineUsers - 1);
+          broadcastOnlineUsers();
         });
         
         // Handle "next" request (find new match)
@@ -105,6 +123,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   videoChatNamespace.on("connection", (socket) => {
     console.log(`New video chat connection: ${socket.id}`);
     
+    // Increment online users count
+    onlineUsers++;
+    broadcastOnlineUsers();
+    
     // Get user preferences from query parameters
     const preference = socket.handshake.query.preference as ConnectionPreferenceType || ConnectionPreference.AnyCountry;
     const gender = socket.handshake.query.gender as GenderType;
@@ -132,6 +154,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Video chat disconnected: ${socket.id}`);
           matchLogic.removeFromQueue(socket.id);
           matchLogic.leaveRoom(socket.id, videoChatNamespace);
+          
+          // Decrement online users count
+          onlineUsers = Math.max(0, onlineUsers - 1);
+          broadcastOnlineUsers();
         });
         
         // Handle "next" request (find new match)
@@ -153,6 +179,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         socket.emit("error", "Failed to process your location data");
         socket.disconnect();
       });
+  });
+
+  // Handle stats connections
+  statsNamespace.on("connection", (socket) => {
+    console.log(`New stats connection: ${socket.id}`);
+    
+    // Send current online users count to the newly connected client
+    socket.emit('onlineUsers', onlineUsers);
+    
+    socket.on("disconnect", () => {
+      console.log(`Stats disconnected: ${socket.id}`);
+    });
   });
 
   // API endpoint to get user's geo location

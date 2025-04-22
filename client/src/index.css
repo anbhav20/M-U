@@ -69,18 +69,4 @@
       transform: scale(1.0);
     }
   }
-  
-  /* Subtle bounce animation for the scroll-to-bottom button */
-  .animate-bounce-subtle {
-    animation: bounce-subtle 2s infinite;
-  }
-  
-  @keyframes bounce-subtle {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-5px);
-    }
-  }
 }
