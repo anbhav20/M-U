@@ -85,7 +85,7 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
       if (lastMessage?.sender === 'you') {
         // Use setTimeout to ensure this happens after the DOM update
         setTimeout(() => {
-          messagesEndRef.current?.scrollIntoView({ block: 'end' });
+          messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
         }, 0);
       }
     }
@@ -98,7 +98,7 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
   React.useEffect(() => {
     if (status === 'connected' && messages.length === 0) {
       // Only scroll to bottom on initial connection
-      messagesEndRef.current?.scrollIntoView();
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [status, messages.length]);
 
@@ -171,14 +171,7 @@ export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProp
   return (
     <div className="border-t p-4">
       <form 
-        onSubmit={(e) => {
-          onSubmit(e);
-          // Find all message end refs and scroll to them
-          const messagesEndRef = document.querySelector('[data-scroll-anchor="true"]');
-          if (messagesEndRef) {
-            messagesEndRef.scrollIntoView({ block: 'end', behavior: 'auto' });
-          }
-        }} 
+        onSubmit={onSubmit} 
         className="flex items-center gap-2"
       >
         <input
