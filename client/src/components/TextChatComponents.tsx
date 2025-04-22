@@ -70,10 +70,24 @@ interface ChatMessagesProps {
 }
 
 export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) {
-  const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const messagesContainerRef = React.useRef<HTMLDivElement>(null);
   const prevMessagesLengthRef = React.useRef(messages.length);
   
+  // Function to scroll to bottom of the container
+  const scrollToBottom = (smooth = true) => {
+    if (messagesContainerRef.current) {
+      // On mobile, we want to use 'auto' behavior to avoid issues with the keyboard
+      const isMobile = window.innerWidth <= 768;
+      const scrollBehavior = isMobile ? 'auto' : (smooth ? 'smooth' : 'auto');
+      
+      const scrollOptions: ScrollToOptions = { 
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: scrollBehavior as ScrollBehavior
+      };
+      messagesContainerRef.current.scrollTo(scrollOptions);
+    }
+  };
+
   // Scroll to bottom when user sends a message
   React.useEffect(() => {
     // Check if new messages were added
@@ -85,7 +99,7 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
       if (lastMessage?.sender === 'you') {
         // Use setTimeout to ensure this happens after the DOM update
         setTimeout(() => {
-          messagesEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+          scrollToBottom();
         }, 0);
       }
     }
@@ -98,7 +112,7 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
   React.useEffect(() => {
     if (status === 'connected' && messages.length === 0) {
       // Only scroll to bottom on initial connection
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      scrollToBottom();
     }
   }, [status, messages.length]);
 
@@ -150,12 +164,8 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
         </div>
       )}
 
-      {/* Invisible element for scrolling to bottom */}
-      <div 
-        ref={messagesEndRef} 
-        data-scroll-anchor="true"
-        style={{ float: 'left', clear: 'both', height: '1px', width: '100%' }} 
-      />
+      {/* Add some padding at the bottom for better scrolling experience */}
+      <div style={{ height: '12px' }} />
     </div>
   );
 }
@@ -168,19 +178,79 @@ interface ChatInputProps {
 }
 
 export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProps) {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  
+  // Handle keyboard appearance on mobile
+  React.useEffect(() => {
+    // Function to handle visual viewport resize (keyboard appearance)
+    const handleVisualViewportResize = () => {
+      if (window.innerWidth <= 768 && 'visualViewport' in window) {
+        // When keyboard appears, the visual viewport height decreases
+        const visualViewport = window.visualViewport as any;
+        
+        // Adjust the container to avoid being covered by keyboard
+        document.documentElement.style.setProperty(
+          '--keyboard-height', 
+          `${window.innerHeight - visualViewport.height}px`
+        );
+      }
+    };
+    
+    // Add event listener if visualViewport API is available
+    if ('visualViewport' in window) {
+      window.visualViewport?.addEventListener('resize', handleVisualViewportResize);
+    }
+    
+    return () => {
+      if ('visualViewport' in window) {
+        window.visualViewport?.removeEventListener('resize', handleVisualViewportResize);
+      }
+    };
+  }, []);
+  
+  // Handle focus and blur for mobile keyboard
+  const handleFocus = () => {
+    // On mobile, when input is focused, we want to ensure it's visible
+    if (window.innerWidth <= 768) {
+      // Mark the input as focused for CSS targeting
+      document.documentElement.classList.add('keyboard-open');
+    }
+  };
+  
+  const handleBlur = () => {
+    // When input loses focus on mobile, we want to restore the viewport
+    if (window.innerWidth <= 768) {
+      document.documentElement.classList.remove('keyboard-open');
+    }
+  };
+
   return (
-    <div className="border-t p-4">
+    <div className="border-t p-4 sticky bottom-0 bg-white">
       <form 
-        onSubmit={onSubmit} 
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit(e);
+          
+          // Keep focus on input after sending on mobile
+          if (window.innerWidth <= 768) {
+            setTimeout(() => {
+              inputRef.current?.focus();
+            }, 10);
+          }
+        }} 
         className="flex items-center gap-2"
       >
         <input
+          ref={inputRef}
           type="text"
           placeholder="Type a message..."
           className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
           value={value}
           onChange={onChange}
           disabled={disabled}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          autoComplete="off"
         />
         <button
           type="submit"
@@ -195,8 +265,50 @@ export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProp
 }
 
 export function ChatContainer({ children }: { children: React.ReactNode }) {
+  const [viewportHeight, setViewportHeight] = React.useState<number>(window.innerHeight);
+  
+  // Update viewport height when window resizes or orientation changes
+  React.useEffect(() => {
+    const handleResize = () => {
+      // Use a small timeout to ensure we get the correct height after orientation changes
+      setTimeout(() => {
+        setViewportHeight(window.innerHeight);
+      }, 100);
+    };
+    
+    // Set initial height
+    handleResize();
+    
+    // Add event listeners
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, []);
+  
+  // Calculate container height based on viewport
+  // On mobile, we use a dynamic approach to account for the keyboard
+  const containerHeight = React.useMemo(() => {
+    if (window.innerWidth <= 768) {
+      // Use CSS variable for keyboard height if available
+      return 'calc(100% - var(--keyboard-height, 0px))';
+    } else {
+      return '80vh';
+    }
+  }, [viewportHeight]);
+  
   return (
-    <div className="chat-container bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[80vh] max-h-[80vh]">
+    <div 
+      className="chat-container bg-white rounded-xl shadow-md overflow-hidden flex flex-col"
+      style={{ 
+        height: containerHeight,
+        maxHeight: containerHeight
+      }}
+    >
       {children}
     </div>
   );

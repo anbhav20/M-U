@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
 import useChat from '@/hooks/useChat';
@@ -75,7 +75,7 @@ export default function TextChat() {
       
       // Focus on the input field after sending
       setTimeout(() => {
-        const inputElement = document.querySelector('input[type="text"]');
+        const inputElement = document.querySelector('input[type="text"]') as HTMLInputElement;
         if (inputElement) {
           inputElement.focus();
         }
@@ -83,8 +83,35 @@ export default function TextChat() {
     }
   };
 
+  // Add a useEffect to handle viewport height for mobile
+  React.useEffect(() => {
+    // Fix for mobile browsers: set a CSS variable with the viewport height
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    // Set initial value
+    setVh();
+    
+    // Update on resize and orientation change
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    
+    return () => {
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
+    };
+  }, []);
+
   return (
-    <div className="container mx-auto px-4 py-6 h-screen flex flex-col">
+    <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-6 min-h-screen flex flex-col" 
+         style={{ 
+           // Use the CSS variable for height on mobile
+           height: 'calc(var(--vh, 1vh) * 100)',
+           // Prevent overscroll/bounce
+           overscrollBehavior: 'none'
+         }}>
       <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
         <ChatContainer>
           <ChatHeader
