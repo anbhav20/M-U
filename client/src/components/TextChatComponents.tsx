@@ -73,34 +73,53 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const messagesContainerRef = React.useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = React.useState(true);
-
-  // Detect manual scroll
+  const [userScrolled, setUserScrolled] = React.useState(false);
+  const prevMessagesLengthRef = React.useRef(messages.length);
+  
+  // Improved scroll detection
   const handleScroll = () => {
     if (!messagesContainerRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = messagesContainerRef.current;
+    
+    // Check if user is near bottom (within 50px)
     const atBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 50;
+    
+    // Only set userScrolled if they're actually scrolling up
+    if (!atBottom && scrollTop < scrollHeight - clientHeight) {
+      setUserScrolled(true);
+    } else if (atBottom) {
+      setUserScrolled(false);
+    }
+    
     setAutoScroll(atBottom);
   };
 
-  // Scroll on status change
+  // Scroll on status change - always scroll to bottom when connection status changes
   React.useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      setUserScrolled(false);
+      setAutoScroll(true);
     }
   }, [status]);
 
-  // Auto-scroll on new messages
+  // Auto-scroll on new messages, but only if user hasn't manually scrolled up
   React.useEffect(() => {
-    if (autoScroll && messagesEndRef.current) {
+    // Check if new messages were added
+    const newMessagesAdded = messages.length > prevMessagesLengthRef.current;
+    prevMessagesLengthRef.current = messages.length;
+    
+    if (messagesEndRef.current && (autoScroll || (newMessagesAdded && !userScrolled))) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, autoScroll]);
+  }, [messages, autoScroll, userScrolled]);
 
   return (
     <div
       ref={messagesContainerRef}
-      className="flex-1 overflow-y-auto p-4"
+      className="flex-1 overflow-y-auto p-4 scroll-smooth"
       onScroll={handleScroll}
+      style={{ scrollBehavior: 'smooth', overscrollBehavior: 'contain' }}
     >
       {/* Connection & initial messages */}
       {status === 'waiting' && (
@@ -145,18 +164,21 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
         </div>
       )}
 
-      {/* Scroll-to-bottom button */}
-      {!autoScroll && messages.length > 0 && (
+      {/* Improved Scroll-to-bottom button */}
+      {(!autoScroll || userScrolled) && messages.length > 0 && (
         <button
-          className="fixed bottom-24 right-8 bg-primary text-white rounded-full p-2 shadow-lg"
+          className="fixed bottom-24 right-8 bg-primary hover:bg-blue-600 text-white rounded-full p-3 shadow-lg flex items-center justify-center transition-all duration-200 animate-bounce-subtle"
           onClick={() => {
             setAutoScroll(true);
+            setUserScrolled(false);
             messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
           }}
+          aria-label="Scroll to bottom"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
+          <span className="sr-only">New messages</span>
         </button>
       )}
 
@@ -198,7 +220,7 @@ export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProp
 
 export function ChatContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="chat-container bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[80vh] max-h-[80vh]">
+    <div className="chat-container bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[80vh] max-h-[80vh]" style={{ overscrollBehavior: 'none' }}>
       {children}
     </div>
   );
