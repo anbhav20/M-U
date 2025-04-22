@@ -72,6 +72,14 @@ export default function TextChat() {
     if (inputMessage.trim() !== '') {
       // Send the message - this will trigger auto-scroll in the ChatMessages component
       sendMessage();
+      
+      // Focus on the input field after sending
+      setTimeout(() => {
+        const inputElement = document.querySelector('input[type="text"]');
+        if (inputElement) {
+          inputElement.focus();
+        }
+      }, 10);
     }
   };
 

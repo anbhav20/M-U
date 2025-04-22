@@ -81,9 +81,12 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
       // Get the last message
       const lastMessage = messages[messages.length - 1];
       
-      // If the last message is from "you", scroll to bottom
+      // If the last message is from "you", scroll to bottom immediately
       if (lastMessage?.sender === 'you') {
-        messagesEndRef.current?.scrollIntoView();
+        // Use setTimeout to ensure this happens after the DOM update
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ block: 'end' });
+        }, 0);
       }
     }
     
@@ -148,7 +151,11 @@ export function ChatMessages({ messages, status, isTyping }: ChatMessagesProps) 
       )}
 
       {/* Invisible element for scrolling to bottom */}
-      <div ref={messagesEndRef} className="h-0" />
+      <div 
+        ref={messagesEndRef} 
+        data-scroll-anchor="true"
+        style={{ float: 'left', clear: 'both', height: '1px', width: '100%' }} 
+      />
     </div>
   );
 }
@@ -163,7 +170,17 @@ interface ChatInputProps {
 export function ChatInput({ value, onChange, onSubmit, disabled }: ChatInputProps) {
   return (
     <div className="border-t p-4">
-      <form onSubmit={onSubmit} className="flex items-center gap-2">
+      <form 
+        onSubmit={(e) => {
+          onSubmit(e);
+          // Find all message end refs and scroll to them
+          const messagesEndRef = document.querySelector('[data-scroll-anchor="true"]');
+          if (messagesEndRef) {
+            messagesEndRef.scrollIntoView({ block: 'end', behavior: 'auto' });
+          }
+        }} 
+        className="flex items-center gap-2"
+      >
         <input
           type="text"
           placeholder="Type a message..."
