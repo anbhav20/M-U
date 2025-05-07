@@ -6,7 +6,7 @@ import {
   ConnectionPreference, 
   Gender,
   GenderPreference
-} from '../../shared/schema.js';
+} from '@shared/schema.js';
 import { 
   ChatContainer, 
   ChatHeader, 
