@@ -1,4 +1,4 @@
-# Talk2Stranger
+# M-U(talk2stranger)
 
 A real-time anonymous chat platform that allows users to connect with strangers via text and video chat. This is a complete, database-free application built with modern technologies focused on real-time communication.
 
