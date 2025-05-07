@@ -68,11 +68,38 @@ export default function VideoChat() {
     navigate('/');
   };
 
+  // Add useEffect to handle mobile viewport height
+  useEffect(() => {
+    // Function to set the viewport height CSS variable
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+    
+    // Set initial value
+    setVh();
+    
+    // Update on resize and orientation change
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    
+    return () => {
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
+    };
+  }, []);
+
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-gray-900 rounded-xl shadow-md overflow-hidden">
-          <div className="relative h-[80vh] bg-gray-800 flex items-center justify-center">
+    <div className="container mx-auto px-0 sm:px-4 py-0 sm:py-6 min-h-screen"
+         style={{ 
+           // Use the CSS variable for height on mobile
+           height: 'calc(var(--vh, 1vh) * 100)',
+           // Prevent overscroll/bounce
+           overscrollBehavior: 'none'
+         }}>
+      <div className="w-full max-w-5xl mx-auto h-full">
+        <div className="bg-gray-900 rounded-none sm:rounded-xl shadow-none sm:shadow-md overflow-hidden h-full">
+          <div className="relative h-full sm:h-[80vh] bg-gray-800 flex items-center justify-center">
             {status !== 'connected' && (
               <VideoOverlay status={status} />
             )}

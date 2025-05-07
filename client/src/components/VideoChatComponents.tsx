@@ -50,13 +50,13 @@ export function VideoContainer({ localStreamRef, remoteStreamRef, isCameraOn }: 
         
         {/* When not connected */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-gray-400 text-6xl">
+          <div className="text-gray-400 text-4xl sm:text-6xl">
             <i className="fas fa-user-circle"></i>
           </div>
         </div>
 
-        {/* User's video (picture-in-picture) */}
-        <div className="absolute bottom-4 right-4 w-48 h-36 bg-gray-700 rounded-lg overflow-hidden shadow-lg">
+        {/* User's video (picture-in-picture) - smaller on mobile */}
+        <div className="absolute bottom-4 right-4 w-28 h-24 sm:w-48 sm:h-36 bg-gray-700 rounded-lg overflow-hidden shadow-lg">
           {isCameraOn ? (
             <video 
               ref={localStreamRef}
@@ -67,7 +67,7 @@ export function VideoContainer({ localStreamRef, remoteStreamRef, isCameraOn }: 
             ></video>
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-800">
-              <i className="fas fa-video-slash text-gray-400 text-xl"></i>
+              <i className="fas fa-video-slash text-gray-400 text-sm sm:text-xl"></i>
             </div>
           )}
         </div>
@@ -112,39 +112,39 @@ export function VideoControls({
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2 sm:p-4">
       <div className="flex justify-between items-center">
         <div>
-          <span className="text-white text-sm font-medium flex items-center">
-            <span className={`w-2 h-2 rounded-full ${getStatusColor()} inline-block mr-2`}></span>
+          <span className="text-white text-xs sm:text-sm font-medium flex items-center">
+            <span className={`w-2 h-2 rounded-full ${getStatusColor()} inline-block mr-1 sm:mr-2`}></span>
             <span>{getStatusText()}</span>
           </span>
         </div>
-        <div className="flex space-x-4">
+        <div className="flex space-x-2 sm:space-x-4">
           <button 
             onClick={onToggleMic}
-            className={`w-10 h-10 ${isMicOn ? 'bg-gray-700' : 'bg-red-600'} rounded-full flex items-center justify-center text-white hover:bg-gray-600 transition-colors`}
+            className={`w-8 h-8 sm:w-10 sm:h-10 ${isMicOn ? 'bg-gray-700' : 'bg-red-600'} rounded-full flex items-center justify-center text-white hover:bg-gray-600 transition-colors`}
           >
-            <i className={`fas ${isMicOn ? 'fa-microphone' : 'fa-microphone-slash'}`}></i>
+            <i className={`fas ${isMicOn ? 'fa-microphone' : 'fa-microphone-slash'} text-xs sm:text-base`}></i>
           </button>
           <button 
             onClick={onToggleCamera}
-            className={`w-10 h-10 ${isCameraOn ? 'bg-gray-700' : 'bg-red-600'} rounded-full flex items-center justify-center text-white hover:bg-gray-600 transition-colors`}
+            className={`w-8 h-8 sm:w-10 sm:h-10 ${isCameraOn ? 'bg-gray-700' : 'bg-red-600'} rounded-full flex items-center justify-center text-white hover:bg-gray-600 transition-colors`}
           >
-            <i className={`fas ${isCameraOn ? 'fa-video' : 'fa-video-slash'}`}></i>
+            <i className={`fas ${isCameraOn ? 'fa-video' : 'fa-video-slash'} text-xs sm:text-base`}></i>
           </button>
           <button 
             onClick={onFindNext}
-            className="w-10 h-10 bg-yellow-600 rounded-full flex items-center justify-center text-white hover:bg-yellow-700 transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-600 rounded-full flex items-center justify-center text-white hover:bg-yellow-700 transition-colors"
             disabled={status === 'disconnected'}
           >
-            <i className="fas fa-random"></i>
+            <i className="fas fa-random text-xs sm:text-base"></i>
           </button>
           <button 
             onClick={onEndCall}
-            className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:bg-red-700 transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-full flex items-center justify-center text-white hover:bg-red-700 transition-colors"
           >
-            <i className="fas fa-phone-slash"></i>
+            <i className="fas fa-phone-slash text-xs sm:text-base"></i>
           </button>
         </div>
       </div>

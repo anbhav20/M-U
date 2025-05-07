@@ -18,38 +18,38 @@ export function ChatHeader({ status, onFindNext, onEndChat }) {
   };
 
   return (
-    <div className="border-b p-4 flex justify-between items-center">
+    <div className="border-b p-3 sm:p-4 flex justify-between items-center">
       <div className="flex items-center">
-        <div className="mr-3">
+        <div className="mr-2 sm:mr-3">
           <div className="relative">
-            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
               <i className="fas fa-user"></i>
             </div>
-            <span className={`absolute bottom-0 right-0 w-3 h-3 ${getStatusColor().split(' ')[0]} rounded-full border-2 border-white`} />
+            <span className={`absolute bottom-0 right-0 w-2 h-2 sm:w-3 sm:h-3 ${getStatusColor().split(' ')[0]} rounded-full border-2 border-white`} />
           </div>
         </div>
         <div>
-          <h3 className="font-medium">Stranger</h3>
-          <div className={`flex items-center text-sm ${getStatusColor().split(' ')[1]}`}>
+          <h3 className="font-medium text-sm sm:text-base">Stranger</h3>
+          <div className={`flex items-center text-xs sm:text-sm ${getStatusColor().split(' ')[1]}`}>
             <span>{getStatusText()}</span>
           </div>
         </div>
       </div>
-      <div className="flex space-x-3">
+      <div className="flex space-x-2 sm:space-x-3">
         <button
           onClick={onFindNext}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center"
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 sm:px-4 py-1 sm:py-2 rounded-lg flex items-center text-xs sm:text-sm"
           disabled={status === 'disconnected'}
         >
-          <i className="fas fa-random mr-2"></i>
-          <span>Next</span>
+          <i className="fas fa-random mr-1 sm:mr-2"></i>
+          <span className="hidden xs:inline">Next</span>
         </button>
         <button
           onClick={onEndChat}
-          className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center"
+          className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 sm:px-4 py-1 sm:py-2 rounded-lg flex items-center text-xs sm:text-sm"
         >
-          <i className="fas fa-times mr-2"></i>
-          <span>End</span>
+          <i className="fas fa-times mr-1 sm:mr-2"></i>
+          <span className="hidden xs:inline">End</span>
         </button>
       </div>
     </div>
@@ -194,6 +194,11 @@ export function ChatInput({ value, onChange, onSubmit, disabled }) {
     if (window.innerWidth <= 768) {
       // Mark the input as focused for CSS targeting
       document.documentElement.classList.add('keyboard-open');
+      
+      // Scroll to the input after a short delay to ensure the keyboard is open
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
     }
   };
   
@@ -205,7 +210,7 @@ export function ChatInput({ value, onChange, onSubmit, disabled }) {
   };
 
   return (
-    <div className="border-t p-4 sticky bottom-0 bg-white">
+    <div className="border-t p-2 sm:p-4 sticky bottom-0 bg-white">
       <form 
         onSubmit={(e) => {
           e.preventDefault();
@@ -218,13 +223,13 @@ export function ChatInput({ value, onChange, onSubmit, disabled }) {
             }, 10);
           }
         }} 
-        className="flex items-center gap-2"
+        className="flex items-center gap-1 sm:gap-2"
       >
         <input
           ref={inputRef}
           type="text"
           placeholder="Type a message..."
-          className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="flex-1 border border-gray-300 rounded-l-lg px-2 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm sm:text-base"
           value={value}
           onChange={onChange}
           disabled={disabled}
@@ -234,7 +239,7 @@ export function ChatInput({ value, onChange, onSubmit, disabled }) {
         />
         <button
           type="submit"
-          className={`${disabled ? 'bg-gray-400' : 'bg-primary hover:bg-blue-600'} text-white px-4 py-2 rounded-r-lg transition-colors`}
+          className={`${disabled ? 'bg-gray-400' : 'bg-primary hover:bg-blue-600'} text-white px-3 sm:px-4 py-2 rounded-r-lg transition-colors`}
           disabled={disabled}
         >
           <i className="fas fa-paper-plane"></i>
@@ -283,7 +288,7 @@ export function ChatContainer({ children }) {
   
   return (
     <div 
-      className="chat-container bg-white rounded-xl shadow-md overflow-hidden flex flex-col"
+      className="chat-container bg-white rounded-none sm:rounded-xl shadow-none sm:shadow-md overflow-hidden flex flex-col w-full h-full"
       style={{ 
         height: containerHeight,
         maxHeight: containerHeight

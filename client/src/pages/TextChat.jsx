@@ -102,14 +102,14 @@ export default function TextChat() {
   }, []);
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-6 min-h-screen flex flex-col" 
+    <div className="container mx-auto px-0 sm:px-4 py-0 sm:py-6 min-h-screen flex flex-col" 
          style={{ 
            // Use the CSS variable for height on mobile
            height: 'calc(var(--vh, 1vh) * 100)',
            // Prevent overscroll/bounce
            overscrollBehavior: 'none'
          }}>
-      <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
+      <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col">
         <ChatContainer>
           <ChatHeader
             status={status}
