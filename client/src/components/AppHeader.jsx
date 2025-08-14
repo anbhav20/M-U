@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'wouter';
-import { useOnlineUsers } from '@/contexts/OnlineUsersContext';
+import React, { useState } from "react";
+import { Link } from "wouter";
+import { useOnlineUsers } from "@/contexts/OnlineUsersContext";
 
 export default function AppHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,10 +19,16 @@ export default function AppHeader() {
         <div className="hidden md:flex items-center space-x-6">
           <div className="flex items-center text-green-600">
             <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-            <span className="text-sm font-medium">{onlineUsers} {onlineUsers === 1 ? 'user' : 'users'} online</span>
+            <span className="text-sm font-medium">
+              {onlineUsers} {onlineUsers === 1 ? "user" : "users"} online
+            </span>
           </div>
-          <a href="/how-it-works" className="text-gray-600 hover:text-primary transition-colors">How it works</a>
-  <a href="/about" className="text-gray-600 hover:text-primary transition-colors">About</a>
+          <Link href="/how-it-works" className="text-gray-600 hover:text-primary transition-colors">
+            How it works
+          </Link>
+          <Link href="/about" className="text-gray-600 hover:text-primary transition-colors">
+            About
+          </Link>
         </div>
 
         <div className="md:hidden flex items-center">
@@ -30,11 +36,11 @@ export default function AppHeader() {
             <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-1 animate-pulse"></span>
             <span className="text-xs font-medium">{onlineUsers}</span>
           </div>
-          <button 
+          <button
             className="text-gray-600 focus:outline-none"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+            <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"} text-xl`}></i>
           </button>
         </div>
       </div>
@@ -43,12 +49,15 @@ export default function AppHeader() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white shadow-md">
           <div className="px-4 py-3 space-y-2">
-            <a href="/how-it-works" className="block text-gray-600 hover:text-primary transition-colors py-2">How it works</a>
-            <a href="/about" className="block text-gray-600 hover:text-primary transition-colors py-2">About</a>
+            <Link href="/how-it-works" className="block text-gray-600 hover:text-primary transition-colors py-2">
+              How it works
+            </Link>
+            <Link href="/about" className="block text-gray-600 hover:text-primary transition-colors py-2">
+              About
+            </Link>
           </div>
         </div>
       )}
-      
     </header>
   );
 }

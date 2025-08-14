@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -18,6 +18,12 @@ import AppFooter from "@/components/AppFooter";
 import { OnlineUsersProvider } from "@/contexts/OnlineUsersContext";
 
 function Router() {
+  const [location] = useLocation();
+  const hideFooterRoutes = ["/chat", "/video"];
+  const hideFooter = hideFooterRoutes.some((route) =>
+    location.startsWith(route)
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800 flex flex-col">
       <AppHeader />
@@ -35,12 +41,13 @@ function Router() {
           <Route component={NotFound} />
         </Switch>
       </main>
-      <AppFooter />
+
+      {!hideFooter && <AppFooter />}
     </div>
   );
 }
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -52,5 +59,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;

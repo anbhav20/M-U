@@ -11,7 +11,9 @@ export default function AppFooter() {
           {/* App description */}
           <div>
             <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">M&U</h3>
-            <p className="text-gray-300 text-sm sm:text-base mb-3 sm:mb-4">Connect with people from around the world through secure and anonymous text and video chats.</p>
+            <p className="text-gray-300 text-sm sm:text-base mb-3 sm:mb-4">
+              Connect with people from around the world through secure and anonymous text and video chats.
+            </p>
             <div className="flex space-x-4">
               <a href="https://www.instagram.com/__anbhav/" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <FaInstagram size={18} />
@@ -26,18 +28,10 @@ export default function AppFooter() {
           <div>
             <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Quick Links</h3>
             <ul className="space-y-1 sm:space-y-2 text-sm sm:text-base">
-              <li>
-                <Link href="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
-              </li>
-              <li>
-                <Link href="/chat" className="text-gray-300 hover:text-white transition-colors">Text Chat</Link>
-              </li>
-              <li>
-                <Link href="/video" className="text-gray-300 hover:text-white transition-colors">Video Chat</Link>
-              </li>
-              <li>
-                <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-              </li>
+              <li><Link href="/" className="text-gray-300 hover:text-white transition-colors">Home</Link></li>
+              <li><Link href="/chat" className="text-gray-300 hover:text-white transition-colors">Text Chat</Link></li>
+              <li><Link href="/video" className="text-gray-300 hover:text-white transition-colors">Video Chat</Link></li>
+              <li><a href="/features" className="text-gray-300 hover:text-white transition-colors">Features</a></li>
             </ul>
           </div>
 
@@ -57,9 +51,9 @@ export default function AppFooter() {
         <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-4 sm:pt-6 text-center text-gray-400 text-xs sm:text-sm">
           <p>© {currentYear} M&U. All rights reserved. Created By Anbhav.</p>
           <div className="mt-2 space-x-2 sm:space-x-4 flex flex-wrap justify-center">
-            <a href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-            <a href="terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-            <a href="community-guidelines" className="text-gray-400 hover:text-white transition-colors">Community Guidelines</a>
+            <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link>
+            <Link href="/community-guidelines" className="text-gray-400 hover:text-white transition-colors">Community Guidelines</Link>
           </div>
         </div>
       </div>
