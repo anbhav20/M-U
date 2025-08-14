@@ -1,0 +1,5 @@
+# robots.txt for M&U Chat
+User-agent: *
+Allow: /
+
+Sitemap: https://teresite.com/sitemap.xml

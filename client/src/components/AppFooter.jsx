@@ -55,11 +55,11 @@ export default function AppFooter() {
         </div>
 
         <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-4 sm:pt-6 text-center text-gray-400 text-xs sm:text-sm">
-          <p>© {currentYear} M&U. All rights reserved.</p>
+          <p>© {currentYear} M&U. All rights reserved. Created By Anbhav.</p>
           <div className="mt-2 space-x-2 sm:space-x-4 flex flex-wrap justify-center">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="text-gray-400 hover:text-white transition-colors">Community Guidelines</a>
+            <a href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a>
+            <a href="terms-of-service" className="text-gray-400 hover:text-white transition-colors">Terms of Service</a>
+            <a href="community-guidelines" className="text-gray-400 hover:text-white transition-colors">Community Guidelines</a>
           </div>
         </div>
       </div>

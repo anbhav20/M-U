@@ -21,8 +21,8 @@ export default function AppHeader() {
             <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
             <span className="text-sm font-medium">{onlineUsers} {onlineUsers === 1 ? 'user' : 'users'} online</span>
           </div>
-          <a href="#" className="text-gray-600 hover:text-primary transition-colors">How it works</a>
-          <a href="#" className="text-gray-600 hover:text-primary transition-colors">About</a>
+          <a href="/how-it-works" className="text-gray-600 hover:text-primary transition-colors">How it works</a>
+  <a href="/about" className="text-gray-600 hover:text-primary transition-colors">About</a>
         </div>
 
         <div className="md:hidden flex items-center">
@@ -43,9 +43,8 @@ export default function AppHeader() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white shadow-md">
           <div className="px-4 py-3 space-y-2">
-            <a href="#" className="block text-gray-600 hover:text-primary transition-colors py-2">How it works</a>
-            <a href="#" className="block text-gray-600 hover:text-primary transition-colors py-2">About</a>
-            <a href="#" className="block text-gray-600 hover:text-primary transition-colors py-2">FAQ</a>
+            <a href="/how-it-works" className="block text-gray-600 hover:text-primary transition-colors py-2">How it works</a>
+            <a href="/about" className="block text-gray-600 hover:text-primary transition-colors py-2">About</a>
           </div>
         </div>
       )}

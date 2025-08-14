@@ -7,8 +7,14 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import TextChat from "@/pages/TextChat";
 import VideoChat from "@/pages/VideoChat";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
+import HowItWorks from "@/pages/HowItWorks";
+import About from "@/pages/About";
+import Features from "@/pages/Features";
+import CommunityGuidelines from "@/pages/CommunityGuidelines";
 import AppHeader from "@/components/AppHeader";
-import AppFooter from "@/components/AppFooter.jsx";
+import AppFooter from "@/components/AppFooter";
 import { OnlineUsersProvider } from "@/contexts/OnlineUsersContext";
 
 function Router() {
@@ -20,6 +26,12 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/chat" component={TextChat} />
           <Route path="/video" component={VideoChat} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+          <Route path="/how-it-works" component={HowItWorks} />
+          <Route path="/about" component={About} />
+          <Route path="/features" component={Features} />
+          <Route path="/community-guidelines" component={CommunityGuidelines} />
           <Route component={NotFound} />
         </Switch>
       </main>
