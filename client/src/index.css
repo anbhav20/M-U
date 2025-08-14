@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Mobile viewport fix */
+  :root {
+     --vh: 1vh;
+    --keyboard-height: 0px;
+    --primary: 220 90% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 340 80% 50%;              /* ADD THIS */
+    --secondary-foreground: 0 0% 100%;   
+  }
+
+  /* Prevent scrolling when keyboard is open */
+  html.keyboard-open,
+  html.keyboard-open body {
+    @apply overflow-hidden;
+    height: 100%;
+  }
+
+  /* Chat container responsive styles */
+  .chat-container {
+    @apply w-full max-w-4xl mx-auto flex flex-col;
+    /* Desktop height */
+    @apply h-[calc(100vh-2rem)] max-h-[800px];
+    /* Mobile rounded & shadow classes */
+    @apply rounded-none shadow-none;
+  }
+
+  @media (max-width: 768px) {
+    .chat-container {
+      height: calc(var(--vh, 1vh) * 100 - var(--keyboard-height, 0px));
+      max-height: calc(var(--vh, 1vh) * 100 - var(--keyboard-height, 0px));
+    }
+  }
+
+  .chat-messages {
+    @apply flex-1 overflow-y-auto bg-gray-50 flex flex-col;
+    height: calc(100% - 140px);
+    /* Prevent overscroll bounce */
+    overscroll-behavior: contain;
+  }
+
+  .chat-input-container {
+    @apply border-t p-4 bg-white;
+    height: 80px;
+    @apply sticky bottom-0 z-10;
+  }
+
+  /* If you need to adjust only on mobile, use responsive prefix in HTML, or add media for height/position */
+
+  .chat-bubble {
+    @apply my-2 p-3 rounded-lg break-words inline-block max-w-[75%];
+  }
+
+  .chat-bubble-you {
+    @apply bg-blue-600 text-white ml-auto rounded-br-none float-right clear-both;
+  }
+
+  .chat-bubble-stranger {
+    @apply bg-gray-200 text-gray-700 mr-auto rounded-bl-none float-left clear-both;
+  }
+
+  .chat-bubble-system {
+    @apply bg-gray-100 text-gray-500 mx-auto text-center text-sm px-4 py-2 rounded-full max-w-max clear-both;
+  }
+
+  /* Typing indicator animation */
+  .typing-indicator {
+    @apply flex justify-center items-center space-x-1;
+  }
+
+  .typing-indicator span {
+    @apply w-2 h-2 bg-gray-400 rounded-full block;
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+
+  .typing-indicator span:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+
+  .typing-indicator span:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+
+  @keyframes bounce {
+    0%, 80%, 100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1.0);
+    }
+  }
+}
